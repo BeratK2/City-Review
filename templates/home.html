@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Search</title>
+</head>
+<body>
+
+<a href="{{url_for('login')}}">Login</a>
+<a href="{{url_for('register')}}">Register</a>
+
+<h1>City Search</h1>
+
+<!-- Search Form -->
+<form action="/search" method="post">
+    <input type="text" name="searchInput" id="searchInput" list="citiesList" placeholder="Search for a city...">
+    <datalist id="citiesList">
+        <!-- City names will be dynamically populated here -->
+    </datalist>
+    <button type="submit">Search</button>
+</form>
+
+<!-- Display Results -->
+<ul id="searchResults"></ul>
+<script>
+    // Fetch and populate the datalist with city names
+    fetch('/all_cities')
+        .then(response => response.json())
+        .then(cityNames => {
+            var datalist = document.getElementById('citiesList');
+            cityNames.forEach(city => {
+                var option = document.createElement('option');
+                option.value = city;
+                datalist.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error fetching city names:', error));
+
+    // Function to handle dynamic search
+    function searchCities() {
+        var searchQuery = document.getElementById("searchInput").value;
+
+        // Make AJAX request to the server
+        fetch('/search', {
+            method: 'POST',
+            body: new URLSearchParams({ 'searchInput': searchQuery }),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        .then(response => response.json())
+        .then(results => displayResults(results))
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Function to display search results
+    function displayResults(results) {
+        var resultsList = document.getElementById("searchResults");
+        resultsList.innerHTML = "";  // Clear previous results
+
+        // Create list items and append to the results list
+        results.forEach(function(result) {
+            var listItem = document.createElement("li");
+            listItem.textContent = result;
+            resultsList.appendChild(listItem);
+        });
+    }
+</script>
+
+</body>
+</html>
