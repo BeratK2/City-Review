@@ -31,7 +31,7 @@ login_manager.login_view = "login"
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.qu.get(int(user_id))
+    return User.query.get(int(user_id))
 
 
 # User Table Schema
@@ -152,6 +152,7 @@ def login():
                 login_user(user)
                 return redirect(url_for("dashboard"))
     return render_template("login.html", form=form)
+
 
 # Register route
 @app.route("/register", methods=["GET", "POST"])
