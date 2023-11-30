@@ -34,6 +34,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+
 # User Table Schema
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -53,9 +54,6 @@ class City(db.Model):
     avg_affordability = db.Column(db.Integer)
     ratings = db.Column(db.JSON)
 
-
-# def test_connection(self):
-# with app.app_context():
 
 
 # Register Form Class
@@ -96,6 +94,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Login")
 
 
+
 # Main route
 @app.route("/")
 def home():
@@ -129,11 +128,28 @@ def search():
     # Query the database for cities
     matching_cities = City.query.filter(City.name.ilike(f"%{search_query}%")).all()
 
-    # Convert city objects to a list of strings
-    results = [city.name for city in matching_cities]
+    # Assume the first result is the selected city (you may want to add more logic here)
+    selected_city = matching_cities[0] if matching_cities else None
 
-    return jsonify(results)
+    # Update avg_safety to 4 for all matching cities
+    if selected_city:
 
+        db.session.commit()
+
+    # Pass the selected city name to the 'city.html' template
+    return render_template("city.html", selected_city=selected_city)
+
+
+#Review Route
+@app.route("/review", methods=["GET", "POST"])
+@login_required
+def review():
+    # Ensure the user is logged in
+    if not current_user.is_authenticated:
+        # If not logged in, redirect to the login page
+        return redirect(url_for('login'))  # Assuming your login route is named 'login'
+
+    return render_template("review.html")
 
 # Login route
 @app.route("/dashboard", methods=["GET", "POST"])
@@ -141,6 +157,8 @@ def dashboard():
     return render_template("dashboard.html")
 
 
+
+#*AUTHENTICATION ROUTES*#
 # Login route
 @app.route("/login", methods=["GET", "POST"])
 def login():

@@ -6,6 +6,25 @@
     <title>City</title>
 </head>
 <body>
-    
+    <h1>{{ selected_city.name }}</h1>
+    <a href="{{url_for('review')}}">Review This City</a>
+    <h3>Safety: {{selected_city.avg_safety}}</h3>
+    <h3>Transportation: {{selected_city.avg_transportation}}</h3>
+    <h3>Attractions: {{selected_city.avg_attractions}}</h3>
+    <h3>Dining: {{selected_city.avg_dining}}</h3>
+    <h3>Social: {{selected_city.avg_social}}</h3>
+    <h3>Affordability: {{selected_city.avg_affordability}}</h3>
+    <h3>Weather: {{selected_city.avg_weather}}</h3>
+
+    {% if selected_city.ratings %}
+            <h4>Ratings:</h4>
+            <ul>
+                {% for key, value in selected_city.ratings.items() %}
+                    <li>{{ key }}: {{ value }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No ratings available for this city.</p>
+        {% endif %}
 </body>
 </html>
