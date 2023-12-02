@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, request, jsonify
+from flask import Flask, render_template, session, url_for, redirect, request, jsonify, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import (
     UserMixin,
@@ -13,6 +13,8 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from city import cities_data
+from sqlalchemy.orm import sessionmaker
+
 
 # Flask and db setup
 app = Flask(__name__)
@@ -95,6 +97,7 @@ class LoginForm(FlaskForm):
 
 
 
+#*MAIN ROUTES*#
 # Main route
 @app.route("/")
 def home():
@@ -133,8 +136,10 @@ def search():
 
     # Update avg_safety to 4 for all matching cities
     if selected_city:
-
         db.session.commit()
+
+        # Store the selected city name in the session
+        session['selected_city_name'] = selected_city.name
 
     # Pass the selected city name to the 'city.html' template
     return render_template("city.html", selected_city=selected_city)
@@ -142,20 +147,87 @@ def search():
 
 #Review Route
 @app.route("/review", methods=["GET", "POST"])
-@login_required
+#@login_required
 def review():
     # Ensure the user is logged in
     if not current_user.is_authenticated:
         # If not logged in, redirect to the login page
         return redirect(url_for('login'))  # Assuming your login route is named 'login'
 
-    return render_template("review.html")
+    # Retrieve the selected city name from the session or wherever you stored it
+    selected_city_name = session.get('selected_city_name')  # Adjust this based on your actual implementation
+
+    # Render the 'review.html' template with the selected city name
+    return render_template("review.html", selected_city_name=selected_city_name)
 
 # Login route
 @app.route("/dashboard", methods=["GET", "POST"])
 def dashboard():
     return render_template("dashboard.html")
 
+
+#Submit Review Route
+@app.route("/submit_review", methods=["POST"])
+#@login_required
+def submit_review():
+    # Retrieve form data
+    safety = int(request.form.get("safety"))
+    transportation = int(request.form.get("transportation"))
+    dining = int(request.form.get("dining"))
+    attractions = int(request.form.get("attractions"))
+    weather = int(request.form.get("weather"))
+    social = int(request.form.get("social"))  # Corrected key to 'social'
+    affordability = int(request.form.get("affordability"))
+    review = request.form.get("review")
+
+    # Create a dictionary for the new ratings
+    new_ratings = {
+        "safety": safety,
+        "transportation": transportation,
+        "dining": dining,
+        "attractions": attractions,
+        "weather": weather,
+        "social": social,
+        "affordability": affordability,
+        "review": review
+    }
+
+      # Retrieve the selected city name from the session
+    selected_city_name = session.get('selected_city_name')
+
+    # Check if the selected city name exists
+    if selected_city_name:
+        # Query the database to get the corresponding City object
+        selected_city = City.query.filter_by(name=selected_city_name).first()
+
+        # Check if the selected city object exists
+        if selected_city:
+            # Commit the changes to the database
+
+            print(f"Selected City Name: {selected_city.name}")
+            print(f"Selected City Ratings Before Update: {selected_city.ratings}")
+
+            # Update the ratings JSON column in the database
+            selected_city_ratings = selected_city.ratings or {}
+            selected_city_ratings.update(new_ratings)
+
+            # Use the merge function to update the existing JSON column
+            selected_city.ratings = db.session.merge(selected_city.ratings, new_ratings)
+            print(f"Selected City Ratings After Update: {selected_city.ratings}")
+            
+            db.session.commit()
+
+            updated_city = City.query.get(selected_city_name)
+            print(f"City Ratings in the Database: {updated_city.ratings}")  
+
+            flash("Review submitted successfully!", "success")
+        else:
+            flash("Error: No selected city found.", "error")
+    else:
+        flash("Error: No selected city name found in the session.", "error")
+
+    # Redirect back to the review page
+    return redirect(url_for('review'))
 
 
 #*AUTHENTICATION ROUTES*#

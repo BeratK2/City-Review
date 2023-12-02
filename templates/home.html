@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>City Search</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+    <title>Yiddy</title>
 </head>
 <body>
 
-<a href="{{url_for('login')}}">Login</a>
+<a href="{{url_for('login')}}" class="first-link">Login</a>
 <a href="{{url_for('register')}}">Register</a>
 
-<h1>City Search</h1>
+<header class="TitleHeader">
+    <h1>YIDDY</h1>
+</header>
 
 <!-- Search Form -->
-<form action="/search" method="post">
+<form action="/search" method="post" class="MainForm">
     <input type="text" name="searchInput" id="searchInput" list="citiesList" placeholder="Search for a city...">
     <datalist id="citiesList">
         <!-- City names will be dynamically populated here -->
