@@ -283,7 +283,7 @@ def submit_review():
         flash("Error: No selected city name found in the session.", "error")
 
     # Redirect back to the review page
-    return redirect(url_for("dashboard"))
+    return redirect(url_for("home"))
 
 
 # *AUTHENTICATION ROUTES*#

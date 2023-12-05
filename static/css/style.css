@@ -1,15 +1,23 @@
 body {
     margin: 0; 
     padding: 0px; 
-    background-image: url('../image/regularcity.jpg');
-    background-size: cover; 
-    background-position: top; 
-    background-repeat: no-repeat; 
-    color: #6e28d9; 
+    background-color: #bf7fc5;
+    color: #6e28d9;  
     text-align: center;
     font-family: "Arial", sans-serif;
     }
   
+    .homePage {
+      margin: 0; 
+      padding: 0px;
+      background-image: url('../image/yiddyheader.jpg');
+      background-size: cover; 
+      background-position: top; 
+      background-repeat: no-repeat; 
+      color: #6e28d9;
+      text-align: center;
+      font-family: "Arial", sans-serif;
+    }
     
     /* Style for the first header */
     header.TitleHeader {
@@ -61,3 +69,15 @@ body {
         margin-right: 10px; 
     }
     
+    .specialUl {
+      list-style: none;
+      padding: 0;
+      margin: 5;
+      width: 300px; 
+      margin: 20px auto; 
+      padding: 20px; 
+      border: 2px solid #000000; 
+      border-radius: 8px;
+      text-transform: capitalize;
+
+  }

@@ -11,6 +11,7 @@
 <body>
     <h1>{{ selected_city.name }}</h1>
     <a href="{{url_for('review')}}">Review This City</a>
+    <h2>Average Review Score</h2>
     <h3>Safety: {{selected_city.avg_safety or NULL}}</h3>
     <h3>Transportation: {{selected_city.avg_transportation or NULL}}</h3>
     <h3>Attractions: {{selected_city.avg_attractions or NULL}}</h3>
@@ -23,7 +24,7 @@
     <h4>Ratings:</h4>
     {% for rating in selected_city.ratings %}
         {% if rating is mapping %}
-            <ul>
+            <ul class="specialUl">
                 {% for key, value in rating.items() %}
                     <li>{{ key }}: {{ value }}</li>
                 {% endfor %}
