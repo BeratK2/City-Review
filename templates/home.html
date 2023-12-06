@@ -8,12 +8,18 @@
 </head>
 <body class="homePage">
 
-<a href="{{url_for('login')}}" class="first-link">Login</a>
-<a href="{{url_for('register')}}">Register</a>
-
-<header class="TitleHeader">
-    <h1>YIDDY</h1>
-</header>
+    <div class="LoginContainer">
+        <div class="popup">
+            <a id="loginLink" onclick="togglePopup()"> 
+                <img src="{{ url_for('static', filename='image/Login.png') }}" alt="Login" class="Log">
+            </a>
+            <p class="TextUnderImage" id="username">{{ username }}</p>
+            <div class="popup-content" id="popupMenu">
+                <a href="{{ url_for('login') }}">Sign In</a>
+                <a href="{{ url_for('logout') }}">Sign Out</a>
+            </div>
+        </div>
+    </div>
 
 <!-- Search Form -->
 <form action="/search" method="post" class="MainForm">
@@ -57,17 +63,19 @@
         .catch(error => console.error('Error:', error));
     }
 
-    // Function to display search results
-    function displayResults(results) {
-        var resultsList = document.getElementById("searchResults");
-        resultsList.innerHTML = "";  // Clear previous results
+    /// Function to toggle the visibility of the popup menu
+    function togglePopup() {
+        var popupMenu = document.getElementById('popupMenu');
+        popupMenu.classList.toggle('show');
+    }
 
-        // Create list items and append to the results list
-        results.forEach(function(result) {
-            var listItem = document.createElement("li");
-            listItem.textContent = result;
-            resultsList.appendChild(listItem);
-        });
+    // Close the popup menu if the user clicks outside of it
+    window.onclick = function(event) {
+        var popupMenu = document.getElementById('popupMenu');
+        var loginLink = document.getElementById('loginLink');
+        if (!event.target.matches('#popupMenu') && !event.target.matches('#loginLink')) {
+            popupMenu.classList.remove('show');
+        }
     }
 </script>
 

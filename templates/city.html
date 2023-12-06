@@ -9,19 +9,26 @@
 </head>
 
 <body>
+    <a href="{{url_for('home')}}"> 
+        <img src="{{ url_for('static', filename='image/fullsizelogo.jpg') }}" alt="Logo" class="logo">
+    </a>
+    
     <h1>{{ selected_city.name }}</h1>
     <a href="{{url_for('review')}}">Review This City</a>
     <h2>Average Review Score</h2>
-    <h3>Safety: {{selected_city.avg_safety or NULL}}</h3>
-    <h3>Transportation: {{selected_city.avg_transportation or NULL}}</h3>
-    <h3>Attractions: {{selected_city.avg_attractions or NULL}}</h3>
-    <h3>Dining: {{selected_city.avg_dining or NULL}}</h3>
-    <h3>Social: {{selected_city.avg_social or NULL}}</h3>
-    <h3>Affordability: {{selected_city.avg_affordability or NULL}}</h3>
-    <h3>Weather: {{selected_city.avg_weather or NULL}}</h3>
+    <h3> <span style="text-decoration: underline;">Safety:</span> {{selected_city.avg_safety or NULL}}</h3>
+    <h3> <span style="text-decoration: underline;">Transportation:</span> {{selected_city.avg_transportation or NULL}}</h3>
+    <h3> <span style="text-decoration: underline;">Attractions:</span> {{selected_city.avg_attractions or NULL}}</h3>
+    <h3> <span style="text-decoration: underline;">Dining:</span> {{selected_city.avg_dining or NULL}}</h3>
+    <h3> <span style="text-decoration: underline;">Social:</span> {{selected_city.avg_social or NULL}}</h3>
+    <h3> <span style="text-decoration: underline;">Affordability:</span> {{selected_city.avg_affordability or NULL}}</h3>
+    <h3> <span style="text-decoration: underline;">Weather:</span> {{selected_city.avg_weather or NULL}}</h3>
 
     {% if selected_city.ratings %}
-    <h4>Ratings:</h4>
+    <header class="CityHeader">
+        <h4>User Reviews </h4>
+    </header>
+    <div class="container">
     {% for rating in selected_city.ratings %}
         {% if rating is mapping %}
             <ul class="specialUl">
@@ -32,8 +39,12 @@
         {% endif %}
     {% endfor %}
 {% else %}
-    <p>No ratings available for this city.</p>
+    <p>No ratings available for this city. Be the first to write a review!</p>
 {% endif %}
+</div>
+
+
+<a href="{{url_for('review')}}">Review This City</a>
 </body>
 
 </html>

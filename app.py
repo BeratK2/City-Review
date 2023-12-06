@@ -118,7 +118,8 @@ def home():
     # Convert city objects to a list of strings
     results = [city.name for city in matching_cities]
 
-    return render_template("home.html", results=results)
+    username = session.get('username', 'Guest')
+    return render_template("home.html", results=results, username = username)
 
 
 # Route to return all cities
@@ -296,6 +297,7 @@ def login():
         if user:
             if bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user)
+                session['username'] = user.username
                 return redirect(url_for("dashboard"))
     return render_template("login.html", form=form)
 
@@ -312,6 +314,15 @@ def register():
         db.session.commit()
         return redirect(url_for("login"))
     return render_template("register.html", form=form)
+
+# Logout route
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    session.pop('username', None) # Remove the username from the session
+    return redirect(url_for("home"))
+
 
 
 if __name__ == "__main__":
